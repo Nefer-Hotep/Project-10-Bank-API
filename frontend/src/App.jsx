@@ -3,6 +3,8 @@ import './assets/css/main.css';
 import Footer from './layout/Footer';
 import Navbar from './layout/NavBar';
 import Home from './pages/Home';
+import Login from './pages/Login';
+import Profile from './pages/Profile';
 
 const router = createBrowserRouter([
   {
@@ -16,10 +18,8 @@ const router = createBrowserRouter([
     ),
     children: [
       { path: '/', element: <Home /> },
-      // { path: '/profile', element: <Profile /> },
-      // { path: '/transfer', element: <Transfer /> },
-      // { path: '/deposit', element: <Deposit /> },
-      // { path: '/withdraw', element: <Withdraw /> },
+      { path: '/login', element: <Login /> },
+      { path: '/profile', element: <Profile /> },
       // { path: '/transactions', element: <Transactions /> },
     ],
   },
