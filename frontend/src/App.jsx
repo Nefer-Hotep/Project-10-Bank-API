@@ -5,6 +5,7 @@ import Navbar from './layout/NavBar';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Profile from './pages/Profile';
+import PrivateRoute from './components/PrivateRoute';
 
 const router = createBrowserRouter([
   {
@@ -19,7 +20,7 @@ const router = createBrowserRouter([
     children: [
       { path: '/', element: <Home /> },
       { path: '/login', element: <Login /> },
-      { path: '/profile', element: <Profile /> },
+      { path: '/profile', element: <PrivateRoute component={Profile}/> },
       // { path: '/transactions', element: <Transactions /> },
     ],
   },

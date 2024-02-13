@@ -1,5 +1,4 @@
 const Profile = () => {
-  // const { user } = useAuth();
   return (
     <main className='main bg-dark'>
       <div className='header'>
