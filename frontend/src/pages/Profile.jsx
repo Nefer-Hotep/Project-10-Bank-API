@@ -1,11 +1,23 @@
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchUserProfile } from '../service/user/userApi';
+
 const Profile = () => {
-  return (
+  const dispatch = useDispatch();
+  const profile = useSelector((state) => state.user);
+
+  useEffect(() => {
+    dispatch(fetchUserProfile());
+  }, [dispatch]);
+
+  console.log(profile);
+  return profile.user ? (
     <main className='main bg-dark'>
       <div className='header'>
         <h1>
           Welcome back
           <br />
-          Tony Jarvis!
+          {profile.user.body.firstName + ' ' + profile.user.body.lastName}!
         </h1>
         <button className='edit-button'>Edit Name</button>
       </div>
@@ -40,6 +52,10 @@ const Profile = () => {
           <button className='transaction-button'>View transactions</button>
         </div>
       </section>
+    </main>
+  ) : (
+    <main className='main bg-dark'>
+      <h1>Loading...</h1>
     </main>
   );
 };

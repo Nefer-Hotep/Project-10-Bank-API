@@ -22,3 +22,25 @@ export const authenticate = createAsyncThunk(
     }
   }
 );
+
+// Async thunk to fetch user profile
+export const fetchUserProfile = createAsyncThunk(
+  'user/fetchProfile',
+  async () => {
+    const token = localStorage.getItem('token');
+    const response = await fetch('http://localhost:3001/api/v1/user/profile', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await response.json();
+    if (response.ok) {
+      console.log(data.message);
+      return data;
+    } else {
+      window.alert(data.message);
+      throw new Error(data.message);
+    }
+  }
+);

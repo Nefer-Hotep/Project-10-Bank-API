@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { authenticate } from './userApi';
+import { authenticate, fetchUserProfile } from './userApi';
 
 // The authSlice reducer manages the state of the user's authentication status.
 const authSlice = createSlice({
@@ -18,4 +18,24 @@ const authSlice = createSlice({
   },
 });
 
-export default authSlice.reducer;
+const userSlice = createSlice({
+  name: 'user',
+  initialState: { user: null, loading: false },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchUserProfile.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchUserProfile.fulfilled, (state, action) => {
+        state.user = action.payload;
+        state.loading = false;
+      })
+      .addCase(fetchUserProfile.rejected, (state) => {
+        state.loading = false;
+      });
+  },
+});
+
+export const authReducer = authSlice.reducer;
+export const userReducer = userSlice.reducer;
