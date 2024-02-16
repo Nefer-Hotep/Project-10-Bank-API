@@ -1,25 +1,83 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchUserProfile } from '../service/user/userApi';
+import { fetchUserProfile, updateUserProfile } from '../service/user/userApi';
 
 const Profile = () => {
+  const user = useSelector((state) => state.user.user);
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
   const dispatch = useDispatch();
-  const profile = useSelector((state) => state.user);
 
+  // Fetch the user profile on component mount
   useEffect(() => {
     dispatch(fetchUserProfile());
   }, [dispatch]);
 
-  console.log(profile);
-  return profile.user ? (
+  // Set the first and last name from the user object
+  useEffect(() => {
+    if (user) {
+      const { firstName: userFirstName, lastName: userLastName } = user.body;
+      setFirstName(userFirstName);
+      setLastName(userLastName);
+    }
+  }, [user]);
+
+  // Update the user profile
+  const handleUpdate = (e) => {
+    e.preventDefault();
+    dispatch(updateUserProfile({ firstName, lastName }));
+    setIsEditing(false);
+  };
+
+  return user ? (
     <main className='main bg-dark'>
       <div className='header'>
         <h1>
           Welcome back
           <br />
-          {profile.user.body.firstName + ' ' + profile.user.body.lastName}!
+          {`${firstName} ${lastName}`}!
         </h1>
-        <button className='edit-button'>Edit Name</button>
+        {isEditing ? (
+          <form>
+            <div className='edit-input'>
+              <input
+                type='text'
+                id='firstName'
+                name='firstName'
+                placeholder={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+              />
+              <input
+                type='text'
+                id='lastName'
+                name='lastName'
+                placeholder={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+              />
+            </div>
+            <div className='edit-button-wrapper'>
+              <button
+                className='edit-button'
+                type='submit'
+                onClick={handleUpdate}
+              >
+                Save
+              </button>
+              <button
+                className='edit-button'
+                type='submit'
+                onClick={() => setIsEditing(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        ) : (
+          <button className='edit-button' onClick={() => setIsEditing(true)}>
+            Edit Name
+          </button>
+        )}
       </div>
       <h2 className='sr-only'>Accounts</h2>
       <section className='account'>

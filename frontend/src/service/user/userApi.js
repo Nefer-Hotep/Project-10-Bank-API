@@ -44,3 +44,27 @@ export const fetchUserProfile = createAsyncThunk(
     }
   }
 );
+
+// Async thunk to update user profile
+export const updateUserProfile = createAsyncThunk(
+  'user/updateProfile',
+  async ({ firstName, lastName }) => {
+    const token = localStorage.getItem('token');
+    const response = await fetch('http://localhost:3001/api/v1/user/profile', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ firstName, lastName }),
+    });
+    const data = await response.json();
+    if (response.ok) {
+      console.log(data.message);
+      return data;
+    } else {
+      window.alert(data.message);
+      throw new Error(data.message);
+    }
+  }
+);

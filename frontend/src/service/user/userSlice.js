@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { authenticate, fetchUserProfile } from './userApi';
+import { authenticate, fetchUserProfile, updateUserProfile } from './userApi';
 
 // The authSlice reducer manages the state of the user's authentication status.
 const authSlice = createSlice({
@@ -18,6 +18,7 @@ const authSlice = createSlice({
   },
 });
 
+// The userSlice reducer manages the state of the user's profile and loading status.
 const userSlice = createSlice({
   name: 'user',
   initialState: { user: null, loading: false },
@@ -32,6 +33,15 @@ const userSlice = createSlice({
         state.loading = false;
       })
       .addCase(fetchUserProfile.rejected, (state) => {
+        state.loading = false;
+      })
+      .addCase(updateUserProfile.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updateUserProfile.fulfilled, (state, action) => {
+        state.user = action.payload;
+        state.loading = false;
+      }).addCase(updateUserProfile.rejected, (state) => {
         state.loading = false;
       });
   },

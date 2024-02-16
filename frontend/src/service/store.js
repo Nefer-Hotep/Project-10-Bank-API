@@ -13,6 +13,7 @@ const preloadedState = {
   },
 };
 
+// The store is created with the auth and user reducers.
 export const store = configureStore({
   reducer: {
     auth: authReducer,

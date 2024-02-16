@@ -15,6 +15,7 @@ const Login = () => {
     dispatch(authenticate({ email, password }));
   };
 
+  // If the user is authenticated, redirect to the profile page
   useEffect(() => {
     if (isAuthenticated) {
       navigate('/profile');
