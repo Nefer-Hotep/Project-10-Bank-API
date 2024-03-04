@@ -1,18 +1,18 @@
 swagger: '2.0'
 info:
-  title: Bank Argent API documentation
+  title: Bank Argent API Documentation
   description: Contains all available API endpoints of BankArgent transaction
   version: '1.0.0'
   termsOfService: 'http://swagger.io/terms/'
-host: localhost:3001
+host: api.bankargent.com
 basePath: /api/v1
 schemes:
-  - http
+  - https
 paths:
-  /user/transactions:
+  /user/{account_id}/transactions:
     get:
       security:
-       - Bearer: []
+        - Bearer: []
       tags:
         - Transactions Module
       summary: Get Transactions grouped by account.
@@ -23,10 +23,15 @@ paths:
           type: string
           description: Attach Bearer JWT token
           required: true
-        - in: query
+        - in: path
           name: account_id
           type: integer
           description: Account ID to filter transactions by
+          required: true
+        - in: query
+          name: month
+          type: string
+          description: The month for which to retrieve the transactions (the current month)
           required: true
       produces:
         - application/json
@@ -41,12 +46,14 @@ paths:
           description: Invalid Account ID
         '401':
           description: Unauthorized - Authentication credentials were missing or incorrect
+        '403':
+          description: Forbidden - The server understood the request but refuses to authorize it
         '500':
           description: Internal Server Error
-  /user/transactions/{transactionId}:
+  /user/{account_id}/transactions/{transactionId}:
     get:
       security:
-       - Bearer: []
+        - Bearer: []
       tags:
         - Transactions Module
       summary: Get Transaction Details
@@ -58,8 +65,13 @@ paths:
           description: Attach Bearer JWT token
           required: true
         - in: path
+          name: account_id
+          type: integer
+          description: Account ID to filter transactions by
+          required: true
+        - in: path
           name: transactionId
-          type: string
+          type: integer
           required: true
           description: ID of the transaction to retrieve
       produces:
@@ -73,11 +85,13 @@ paths:
           description: Transaction not found
         '401':
           description: Unauthorized - Authentication credentials were missing or incorrect
+        '403':
+          description: Forbidden - The server understood the request but refuses to authorize it
         '500':
           description: Internal Server Error
-    put:
+    patch:
       security:
-       - Bearer: []
+        - Bearer: []
       tags:
         - Transactions Module
       summary: Update Transaction Category and Notes
@@ -89,8 +103,13 @@ paths:
           description: Attach Bearer JWT token
           required: true
         - in: path
+          name: account_id
+          type: integer
+          description: Account ID to filter transactions by
+          required: true
+        - in: path
           name: transactionId
-          type: string
+          type: integer
           required: true
           description: ID of the transaction to update
         - in: body
@@ -118,37 +137,8 @@ paths:
           description: Invalid Fields
         '401':
           description: Unauthorized - Authentication credentials were missing or incorrect
-        '500':
-          description: Internal Server Error
-    delete:
-      security:
-       - Bearer: []
-      tags:
-        - Transactions Module
-      summary: Delete Transaction SHOULD NOT EXIST 
-      description: Delete a specific transaction.
-      parameters:
-        - in: header
-          name: Authorization
-          type: string
-          description: Attach Bearer JWT token
-          required: true
-        - in: path
-          name: transactionId
-          type: string
-          required: true
-          description: ID of the transaction to delete
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: Transaction deleted successfully
-          schema:
-            $ref: '#/definitions/ApiResponse'
-        '401':
-          description: Unauthorized - Authentication credentials were missing or incorrect
-        '404':
-          description: Transaction not found
+        '403':
+          description: Forbidden - The server understood the request but refuses to authorize it
         '500':
           description: Internal Server Error
 securityDefinitions:
@@ -187,10 +177,13 @@ definitions:
         type: string
   ApiResponse:
     type: object
+    required:
+      - code
+      - message
     properties:
-      status:
+      code:
         type: integer
+        description: HTTP status code of the response
       message:
         type: string
-      body:
-        type: object
+        description: Message detailing the result of the operation
